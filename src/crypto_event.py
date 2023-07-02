@@ -76,10 +76,11 @@ class WalletTransferComplete(CryptoEvent):
         self.to_wallet = tp2.get_wallet()
         self.coin = tp1.get_coin()
         self.amount = tp1.get_amount()
+        self.fee = tp1.get_fee() + tp2.get_fee()
         
         
     def toString(self):
-        my_string = "WalletTransferComplete;{};{};{};{};{}".format(self.created_time, self.from_wallet, self.to_wallet, self.coin, self.amount)
+        my_string = "WalletTransferComplete;{};{};{};{};{};{}".format(self.created_time, self.from_wallet, self.to_wallet, self.coin, self.amount, self.fee)
         return my_string
         
         
@@ -101,17 +102,21 @@ class WalletTransferPartialList(CryptoEventList):
         
         
 class WalletTransferPartial(CryptoEvent):
-    def __init__(self, created_time, wallet, coin, amount, transfer_type):
+    def __init__(self, created_time, wallet, coin, amount, fee, transfer_type):
         super().__init__(created_time, 'WalletTransferPartial')
         self.wallet = wallet
         self.coin = coin
         self.amount = amount
+        self.fee = fee
         if transfer_type not in ['deposit','withdraw']:
             raise ValueError("Invalid input. Allowed values are 'deposit' and 'withdraw'.")
         self.type = transfer_type
         
     def get_wallet(self):
         return self.wallet
+    
+    def get_fee(self):
+        return self.fee
     
     def get_coin(self):
         return self.coin 
@@ -130,7 +135,7 @@ class WalletTransferPartial(CryptoEvent):
         return same_time & same_amount & complementary_type        
         
     def toString(self):
-        my_string = "WalletTransferPartial;{};{};{};{};{}".format(self.created_time, self.wallet, self.coin, self.amount, self.type)
+        my_string = "WalletTransferPartial;{};{};{};{};{};{}".format(self.created_time, self.wallet, self.coin, self.amount,self.fee, self.type)
         return my_string
     
 
