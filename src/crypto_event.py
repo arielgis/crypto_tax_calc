@@ -1,58 +1,66 @@
 class CryptoEventList:
+    """
+    A class to represent a list of CryptoEvent objects.
+
+    Attributes:
+        events_list (list): A list to store CryptoEvent objects.
+
+    Methods:
+        add_event(crypto_event): Adds a CryptoEvent object to the events_list.
+        sort_events(): Sorts the events_list based on the created_time of each CryptoEvent.
+        toString(): Returns a string representation of the events_list.
+    """
+
     def __init__(self):
+        """
+        Initializes a CryptoEventList object with an empty events_list.
+        """
         self.events_list = []
-        
+
     def add_event(self, crypto_event):
+        """
+        Adds a CryptoEvent object to the events_list.
+
+        Args:
+            crypto_event (CryptoEvent): The CryptoEvent object to be added.
+        """
         self.events_list.append(crypto_event)
-        
+
     def sort_events(self):
+        """
+        Sorts the events_list based on the created_time of each CryptoEvent.
+        """
         self.events_list = sorted(self.events_list, key=lambda obj: obj.get_time())
-        
+
     def toString(self):
+        """
+        Returns a string representation of the events_list.
+
+        Returns:
+            str: A string representation of the events_list.
+        """
         my_string = "\n".join([x.toString() for x in self.events_list])
-        return my_string
+        return my_string  
     
-    """
-    def merge_partial_transfer_events(tp1:'WalletTransferPartial', tp2:'WalletTransferPartial'):
-        if tp1.is_complementary(tp2):
-            new_event = WalletTransferComplete(tp1, tp2)
-            self.events_list.remove(tp1)
-            self.events_list.remove(tp2)
-            self.events_list.append(new_event)
-            self.sort_events()
-            return True
-        else:
-            return False
-        
-    def handle_next_partial_event():
-        n = len(self.events_list)
-        has_partial_events = False
-        for i in range(n-1):
-            if self.events_list[i] == "WalletTransferPartial":
-                has_partial_events = True
-                merge_partial_transfer_events(self.events_list[i], self.events_list[i+1])
-                return True
-        return False
-    
-    
-    def transfer_partial_to_complete(self):
-        self.sort_events()
-        n = len(self.events_list)
-        has_partial_events = True
-        while has_partial_events()
-        
-        for i in range(n-1):
-            if self.events_list[i] == "WalletTransferPartial":
-                
-                
-                
-                & self.events_list[i+1] == "WalletTransferPartial":
-                if self.events_list[i].is_complementary(self.events_list[i+1]):
-                    new_event            
-    """
-            
+
 class CryptoEvent:
+    """
+    A class to represent a list a crypto event.
+
+    Attributes:
+        created_time (string): the time of event
+        event_type (string): type of event
+
+    Methods:
+        get_time():returns the tim
+        sort_events(): Sorts the events_list based on the created_time of each CryptoEvent.
+        toString(): Returns a string representation of the events_list.
+    """
+    
     def __init__(self, created_time, event_type):
+        """
+        Initializes a CryptoEventList object with the time and type of the event
+        """
         self.created_time = created_time
         self.event_type = event_type
         
