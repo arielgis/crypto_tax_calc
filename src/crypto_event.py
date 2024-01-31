@@ -66,7 +66,25 @@ class CryptoEvent:
         
     def get_time(self):
         return self.created_time
-
+    
+    def get_time_val(time_str):
+        v = [int(x) for x in time_str.split("_")]
+        time_val = 15768000 * v[0] + 43200*v[1] + 1440 * v[2] + 60 * v[3] + v[4]
+        return time_val
+    
+class TradeEvent(CryptoEvent):
+    def __init__(self, created_time, wallet, origin_coin, target_coin, origin_coin_amount, target_coin_amount, origin_coin_fee):
+        super().__init__(created_time, 'WalletTransferPartial')
+        self.origin_coin = origin_coin
+        self.target_coin = target_coin
+        self.origin_coin_amount = origin_coin_amount
+        self.target_coin_amount = target_coin_amount
+        self.origin_coin_fee = origin_coin_fee
+    def toString(self):
+        my_string = "TradeEvent;{};{};{};{};{};{}".format(self.created_time, self.origin_coin, self.target_coin, self.origin_coin_amount, 
+                                                          self.target_coin_amount, self.origin_coin_fee)
+        return my_string
+        
 class WalletTransferComplete(CryptoEvent):
     def __init__(self, tp1:'WalletTransferPartial', tp2:'WalletTransferPartial'):        
         super().__init__(tp1.get_time(), 'WalletTransferComplete')
@@ -93,7 +111,7 @@ class WalletTransferPartialList(CryptoEventList):
         for i in range(0, n, 2):
             from_wallet = self.events_list[i]
             to_wallet = self.events_list[i+1]
-            assert from_wallet.is_complementary(to_wallet)
+            assert from_wallet.is_complementary(to_wallet), (from_wallet.toString(),to_wallet.toString())
             if from_wallet.get_transfer_type() == 'deposit':
                 from_wallet, to_wallet = to_wallet, from_wallet
                 new_complete_event = WalletTransferComplete(from_wallet, to_wallet)
@@ -128,7 +146,10 @@ class WalletTransferPartial(CryptoEvent):
         return self.type
         
     def is_complementary(self, other:'WalletTransferPartial') -> bool:
-        same_time = self.get_time() == other.get_time()
+        epsilon = 5
+        time_diff = abs(CryptoEvent.get_time_val(self.get_time()) - CryptoEvent.get_time_val(other.get_time()))
+        assert time_diff < epsilon, (self.toString(), other.toString())
+        same_time =  time_diff < epsilon
         same_amount =  self.get_amount() == other.get_amount()
         same_coin =  self.get_coin() == other.get_coin()
         complementary_type = self.get_transfer_type() != other.get_transfer_type()
